@@ -1,0 +1,6 @@
+*.log*
+*.sqlite
+*.json
+*.conf
+*.pem
+nginx-manager/letsencrypt/**/README

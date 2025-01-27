@@ -1,0 +1,189 @@
+version: '3.8'
+
+services:
+  prowlarr:
+    container_name: prowlarr
+    image: ghcr.io/hotio/prowlarr
+    expose:
+      - "9696"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Asia/Kolkata
+    volumes:
+      - /root/mnt/prowlarr/data:/config
+    networks:
+      - proxy_network
+    labels:
+      - homepage.group=Indexer
+      - homepage.name=Prowlarr
+      - homepage.icon=prowlarr.png
+      - homepage.href=http://prowlarr.poocha.in
+      - homepage.description=Indexer manager
+
+  whisparr:
+    container_name: whisparr
+    image: ghcr.io/hotio/whisparr
+    expose:
+      - "6969"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Asia/Kolkata
+    volumes:
+      - /root/mnt/whisparr/config:/config
+      - /root/mnt/whisparr/data:/data
+      - /root/mnt/downloads:/downloads
+      - /root/mnt/moviex:/moviex
+    networks:
+      - proxy_network
+    labels:
+      - homepage.group=A
+      - homepage.name=Whisparr
+      - homepage.icon=whisparr.png
+      - homepage.href=http://whisparr.poocha.in
+      - homepage.description=Movie management
+
+  jellyfin:
+    image: lscr.io/linuxserver/jellyfin:latest
+    container_name: jellyfin
+    expose:
+      - "8096"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+    volumes:
+      - /root/mnt/jellyfin/library:/config
+      - /root/mnt/tvseries:/data/tvshows
+      - /root/mnt/movies:/data/movies
+    networks:
+      - proxy_network
+    labels:
+      - homepage.group=Media
+      - homepage.name=Jellyfin
+      - homepage.icon=jellyfin.png
+      - homepage.href=http://video.poocha.in
+      - homepage.description=Media server
+      - homepage.widget.type=jellyfin
+      - homepage.widget.url=http://jellyfin:8096
+      - homepage.widget.key=7048ca88bf534aec887760c878fe3f63
+
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    expose:
+      - "8989"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+    volumes:
+      - /root/mnt/sonarr/config:/config
+      - /root/mnt/tvseries:/tv
+      - /root/mnt/downloads:/downloads
+    networks:
+      - proxy_network
+    labels:
+      - homepage.group=Media
+      - homepage.name=Sonarr
+      - homepage.icon=sonarr.png
+      - homepage.href=http://sonarr.poocha.in
+      - homepage.description=TV show management
+
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    expose:
+      - "7878"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+    volumes:
+      - /root/mnt/radarr/config:/config
+      - /root/mnt/movies:/movies
+      - /root/mnt/downloads:/downloads
+    networks:
+      - proxy_network
+    labels:
+      - homepage.group=Media
+      - homepage.name=Radarr
+      - homepage.icon=radarr.png
+      - homepage.href=http://radarr.poocha.in
+      - homepage.description=Movie management
+
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    expose:
+      - "8080"
+      - "6881"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+      - WEBUI_PORT=8080
+      - TORRENTING_PORT=6881
+      - UMASK_SET=022
+    volumes:
+      - /root/mnt/qbittorrent/config:/config
+      - /root/mnt/downloads:/downloads
+    networks:
+      - proxy_network
+    labels:
+      - homepage.group=Media
+      - homepage.name=qBittorrent
+      - homepage.icon=qbittorrent.png
+      - homepage.href=http://torrent.poocha.in
+      - homepage.description=Torrent client
+
+  bazarr:
+    image: lscr.io/linuxserver/bazarr:latest
+    container_name: bazarr
+    expose:
+      - "6767"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+    volumes:
+      - /root/mnt/bazarr/config:/config
+      - /root/mnt/tvseries:/tv
+      - /root/mnt/movies:/movies
+      - /root/mnt/downloads:/downloads
+    networks:
+      - proxy_network
+    labels:
+      - homepage.group=Media
+      - homepage.name=Bazarr
+      - homepage.icon=bazarr.png
+      - homepage.href=http://bazarr.poocha.in
+      - homepage.description=Subtitle manager
+
+  # heimdall:
+  #   image: linuxserver/heimdall
+  #   container_name: heimdall
+  #   expose:
+  #     - "80"
+  #     - "443"
+  #   volumes:
+  #     - /root/mnt/heimdall:/config
+  #   environment:
+  #     - PUID=1000
+  #     - PGID=1000
+  #     - TZ=Asia/Kolkata
+  #   networks:
+  #     - proxy_network
+  #   labels:
+  #     - homepage.group=Dashboard
+  #     - homepage.name=Heimdall
+  #     - homepage.icon=heimdall.png
+  #     - homepage.href=http://home.poocha.in
+  #     - homepage.description=Application dashboard
+
+networks:
+  proxy_network:
+    external: true
